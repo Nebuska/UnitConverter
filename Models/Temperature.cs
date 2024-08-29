@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Models;
 
-public class Temperature(double value, Temperature.Units unit)
+public class Temperature(double value, Temperature.TemperatureUnits temperatureUnit)
 {
-    public enum Units
+    [JsonConverter(typeof(JsonStringEnumConverter<Temperature.TemperatureUnits>))]
+    public enum TemperatureUnits
     {
         Kelvin,
         Celsius,
@@ -11,33 +14,33 @@ public class Temperature(double value, Temperature.Units unit)
     
     public double Value { get; set; } = value;
 
-    public Units Unit { get; set; } = unit;
+    public TemperatureUnits TemperatureUnit { get; set; } = temperatureUnit;
     
-    public double ConvertTo(Units unit)
+    public double ConvertTo(TemperatureUnits temperatureUnit)
     {
-        Value = unit switch
+        Value = temperatureUnit switch
         {
-            Units.Kelvin => Unit switch
+            TemperatureUnits.Kelvin => TemperatureUnit switch
             {
-                Units.Celsius => Value + 273.15,
-                Units.Fahrenheit => (Value + 459.67) * 5 / 9,
+                TemperatureUnits.Celsius => Value + 273.15,
+                TemperatureUnits.Fahrenheit => (Value + 459.67) * 5 / 9,
                 _ => Value
             },
-            Units.Celsius => Unit switch
+            TemperatureUnits.Celsius => TemperatureUnit switch
             {
-                Units.Kelvin => Value - 273.15,
-                Units.Fahrenheit => Value * 9 / 5 + 32,
+                TemperatureUnits.Kelvin => Value - 273.15,
+                TemperatureUnits.Fahrenheit => Value * 9 / 5 + 32,
                 _ => Value
             },
-            Units.Fahrenheit => Unit switch
+            TemperatureUnits.Fahrenheit => TemperatureUnit switch
             {
-                Units.Kelvin => (Value - 32) * 5 / 9 + 273.15,
-                Units.Celsius => (Value - 32) * 5 / 9,
+                TemperatureUnits.Kelvin => (Value - 32) * 5 / 9 + 273.15,
+                TemperatureUnits.Celsius => (Value - 32) * 5 / 9,
                 _ => Value
             },
             _ => Value
         };
-        Unit = unit;
+        TemperatureUnit = temperatureUnit;
         return Value;
     }
 }

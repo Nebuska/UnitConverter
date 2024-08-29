@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Models;
 
-public class Length(double value, Length.Units unit)
+public class Length(double value, Length.LengthUnits unit)
 {
-    public enum Units
+    [JsonConverter(typeof(JsonStringEnumConverter<LengthUnits>))]
+    public enum LengthUnits
     {
         Millimeter,
         Centimeter,
@@ -23,35 +26,35 @@ public class Length(double value, Length.Units unit)
     private const double YardMultiplier = 3 * FootMultiplier;
     private const double MileMultiplier = 1760 * YardMultiplier;
 
-    private double Value { get; set; } = value;
+    public double Value { get; set; } = value;
 
-    private Units Unit { get; set; } = unit;
+    public LengthUnits Unit { get; set; } = unit;
 
-    public double ConvertTo(Units unit)
+    public double ConvertTo(LengthUnits lengthUnit)
     {
-        Value = Value * (GetMultiplier(Unit) / GetMultiplier(unit));
-        Unit = unit;
+        Value = Value * (GetMultiplier(Unit) / GetMultiplier(lengthUnit));
+        Unit = lengthUnit;
         return Value;
     }
     
-    public static double Convert(double value, Units from, Units to)
+    public static double Convert(double value, LengthUnits from, LengthUnits to)
     {
         return value * (GetMultiplier(to) / GetMultiplier(from));
     }
 
-    private static double GetMultiplier(Units unit)
+    private static double GetMultiplier(LengthUnits lengthUnit)
     {
-        return unit switch
+        return lengthUnit switch
         {
-            Units.Millimeter => MillimeterMultiplier,
-            Units.Centimeter => CentimeterMultiplier,
-            Units.Meter => MeterMultiplier,
-            Units.Kilometer => KilometerMultiplier,
-            Units.Inch => InchMultiplier,
-            Units.Foot => FootMultiplier,
-            Units.Yard => YardMultiplier,
-            Units.Mile => MileMultiplier,
-            _ => throw new ArgumentOutOfRangeException(nameof(unit), unit, null)
+            LengthUnits.Millimeter => MillimeterMultiplier,
+            LengthUnits.Centimeter => CentimeterMultiplier,
+            LengthUnits.Meter => MeterMultiplier,
+            LengthUnits.Kilometer => KilometerMultiplier,
+            LengthUnits.Inch => InchMultiplier,
+            LengthUnits.Foot => FootMultiplier,
+            LengthUnits.Yard => YardMultiplier,
+            LengthUnits.Mile => MileMultiplier,
+            _ => throw new ArgumentOutOfRangeException(nameof(lengthUnit), lengthUnit, null)
         };
     }
 }
