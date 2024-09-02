@@ -2,9 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Models;
 
-public class Temperature(double value, Temperature.TemperatureUnits temperatureUnit)
+public class Temperature(double value, Temperature.TemperatureUnits unit)
 {
-    [JsonConverter(typeof(JsonStringEnumConverter<Temperature.TemperatureUnits>))]
+    public Temperature() : this(0, default)
+    {}
+    
+    
+    [JsonConverter(typeof(JsonStringEnumConverter<TemperatureUnits>))]
     public enum TemperatureUnits
     {
         Kelvin,
@@ -14,25 +18,25 @@ public class Temperature(double value, Temperature.TemperatureUnits temperatureU
     
     public double Value { get; set; } = value;
 
-    public TemperatureUnits TemperatureUnit { get; set; } = temperatureUnit;
+    public TemperatureUnits Unit { get; set; } = unit;
     
     public double ConvertTo(TemperatureUnits temperatureUnit)
     {
         Value = temperatureUnit switch
         {
-            TemperatureUnits.Kelvin => TemperatureUnit switch
+            TemperatureUnits.Kelvin => Unit switch
             {
                 TemperatureUnits.Celsius => Value + 273.15,
                 TemperatureUnits.Fahrenheit => (Value + 459.67) * 5 / 9,
                 _ => Value
             },
-            TemperatureUnits.Celsius => TemperatureUnit switch
+            TemperatureUnits.Celsius => Unit switch
             {
                 TemperatureUnits.Kelvin => Value - 273.15,
                 TemperatureUnits.Fahrenheit => Value * 9 / 5 + 32,
                 _ => Value
             },
-            TemperatureUnits.Fahrenheit => TemperatureUnit switch
+            TemperatureUnits.Fahrenheit => Unit switch
             {
                 TemperatureUnits.Kelvin => (Value - 32) * 5 / 9 + 273.15,
                 TemperatureUnits.Celsius => (Value - 32) * 5 / 9,
@@ -40,7 +44,12 @@ public class Temperature(double value, Temperature.TemperatureUnits temperatureU
             },
             _ => Value
         };
-        TemperatureUnit = temperatureUnit;
+        Unit = temperatureUnit;
         return Value;
+    }
+    
+    public override string ToString()
+    {
+        return $"{Value} {Unit.ToString()}";
     }
 }

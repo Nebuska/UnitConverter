@@ -1,0 +1,18 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Models
+@model Models.Length
+
+@{
+	ViewBag.Title = "title";
+	Layout = "_Layout";
+}
+
+<h2>Result</h2>
+
+<div>
+	<label asp-for="Unit"></label>
+	<label>@Model.Unit</label>
+	<br/>
+	<label asp-for="Value"></label>
+	<label>@Model.Value</label>
+</div>

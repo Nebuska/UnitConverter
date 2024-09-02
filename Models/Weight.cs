@@ -2,9 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace Models;
 
-public class Weight(double value, Weight.WeightUnits weightUnit)
+public class Weight(double value, Weight.WeightUnits unit)
 {
-    [JsonConverter(typeof(JsonStringEnumConverter<Weight.WeightUnits>))]
+    public Weight() : this(0, default)
+    {}
+    
+    [JsonConverter(typeof(JsonStringEnumConverter<WeightUnits>))]
     public enum WeightUnits
     {
         Milligram,
@@ -24,12 +27,12 @@ public class Weight(double value, Weight.WeightUnits weightUnit)
 
     public double Value { get; set; } = value;
 
-    public WeightUnits WeightUnit { get; set; } = weightUnit;
+    public WeightUnits Unit { get; set; } = unit;
 
     public double ConvertTo(WeightUnits weightUnit)
     {
-        Value = Value * (GetMultiplier(WeightUnit) / GetMultiplier(weightUnit));
-        WeightUnit = weightUnit;
+        Value = Value * (GetMultiplier(Unit) / GetMultiplier(weightUnit));
+        Unit = weightUnit;
         return Value;
     }
     
@@ -50,5 +53,10 @@ public class Weight(double value, Weight.WeightUnits weightUnit)
             WeightUnits.Pound => PoundMultiplier,
             _ => throw new ArgumentOutOfRangeException(nameof(weightUnit), weightUnit, null)
         };
+    }
+    
+    public override string ToString()
+    {
+        return $"{Value} {Unit.ToString()}";
     }
 }

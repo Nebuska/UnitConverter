@@ -1,0 +1,32 @@
+@using Models
+@model Models.Length
+
+@{
+	ViewBag.Title = "title";
+	Layout = "_Layout";
+}
+
+<h2>Length Converter</h2>
+
+<form asp-action="Index" method="post">
+	<div class="form-group">
+		<label asp-for="Unit"></label>
+		<select asp-for="Unit" asp-items="Html.GetEnumSelectList<Length.LengthUnits>()">
+			<option value="">Select a unit</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<label asp-for="Value"></label>
+		<input asp-for="Value" class="form-control" />
+	</div>
+	<div class="form-group">
+		<label ></label>
+		<select type="hidden" name="to">
+			@foreach(var item in Enum.GetValues(typeof(Length.LengthUnits)))
+			{
+				<option value="@item">@item</option>
+			}
+		</select>
+	</div>
+	<button type="submit" class="btn btn-primary">Convert</button>
+</form>

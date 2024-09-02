@@ -4,6 +4,9 @@ namespace Models;
 
 public class Length(double value, Length.LengthUnits unit)
 {
+    public Length() : this(0, default)
+    {}
+    
     [JsonConverter(typeof(JsonStringEnumConverter<LengthUnits>))]
     public enum LengthUnits
     {
@@ -56,5 +59,10 @@ public class Length(double value, Length.LengthUnits unit)
             LengthUnits.Mile => MileMultiplier,
             _ => throw new ArgumentOutOfRangeException(nameof(lengthUnit), lengthUnit, null)
         };
+    }
+
+    public override string ToString()
+    {
+        return $"{Value} {Unit.ToString()}";
     }
 }
